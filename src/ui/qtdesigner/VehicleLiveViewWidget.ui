@@ -172,6 +172,13 @@
        </widget>
       </item>
       <item>
+       <widget class="QLabel" name="gifLabel">
+        <property name="text">
+         <string>heartBeat</string>
+        </property>
+       </widget>
+      </item>
+      <item>
        <widget class="Line" name="line_2">
         <property name="styleSheet">
          <string notr="true">color: palette(mid)</string>

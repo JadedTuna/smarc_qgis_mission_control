@@ -76,7 +76,7 @@ class FleetMapManager(QObject):
             symbol = QgsSymbol.defaultSymbol(self._waypointLayer.geometryType())
             symbol.setColor(state.mapColor)
 
-            category = QgsRendererCategory(vehicleTopic, symbol, vehicleTopic)
+            category = QgsRendererCategory(vehicleTopic, symbol, vehicleTopic, True) # default render state off/false
             self._waypointLayer.renderer().addCategory(category)
 
             vehicle = VehicleMapObject(

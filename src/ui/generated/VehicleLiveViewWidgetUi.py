@@ -45,7 +45,7 @@ class Ui_VehicleLiveViewWidget(object):
         self.header.setObjectName("header")
         self.horizontalLayout_3 = QtWidgets.QHBoxLayout(self.header)
         self.horizontalLayout_3.setObjectName("horizontalLayout_3")
-        self.mapColorButton = gui.QgsColorButton(self.header)
+        self.mapColorButton = QgsColorButton(self.header)
         self.mapColorButton.setMinimumSize(QtCore.QSize(24, 23))
         self.mapColorButton.setMaximumSize(QtCore.QSize(24, 23))
         self.mapColorButton.setAutoRaise(True)
@@ -87,6 +87,9 @@ class Ui_VehicleLiveViewWidget(object):
         self.lookAtButton.setAutoRaise(True)
         self.lookAtButton.setObjectName("lookAtButton")
         self.horizontalLayout_3.addWidget(self.lookAtButton)
+        self.gifLabel = QtWidgets.QLabel(self.header)
+        self.gifLabel.setObjectName("gifLabel")
+        self.horizontalLayout_3.addWidget(self.gifLabel)
         self.line_2 = QtWidgets.QFrame(self.header)
         self.line_2.setStyleSheet("color: palette(mid)")
         self.line_2.setFrameShadow(QtWidgets.QFrame.Plain)
@@ -291,6 +294,7 @@ class Ui_VehicleLiveViewWidget(object):
         self.vehicleNameLabel.setText(_translate("VehicleLiveViewWidget", "vehicle_name"))
         self.modeLabel.setText(_translate("VehicleLiveViewWidget", "Mode"))
         self.lookAtButton.setToolTip(_translate("VehicleLiveViewWidget", "<b>Focus Vehicle</b>"))
+        self.gifLabel.setText(_translate("VehicleLiveViewWidget", "heartBeat"))
         self.statusLabel.setText(_translate("VehicleLiveViewWidget", "Status"))
         self.rollLabel.setText(_translate("VehicleLiveViewWidget", "Roll:"))
         self.courseLabel.setText(_translate("VehicleLiveViewWidget", "Crs:"))
@@ -314,4 +318,4 @@ class Ui_VehicleLiveViewWidget(object):
         self.altitudeValueLabel.setText(_translate("VehicleLiveViewWidget", "?"))
         self.lonLabel.setText(_translate("VehicleLiveViewWidget", "Lon:"))
         self.latLabel.setText(_translate("VehicleLiveViewWidget", "Lat:"))
-from qgis import gui
+from qgscolorbutton import QgsColorButton
