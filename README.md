@@ -45,4 +45,4 @@ Supported Ubuntu version(s): 22.04 (Python 3.10)
 3. If you want to add custom icons, place them in src/ui/qtdesigner/custom_icons and run `pyrcc5 src/ui/qtdesigner/resources.qrc -o src/ui/generated/resources_rc.py`
 
 ### Vehicle visualization
-As of 2026/06/09, different vehicle types (subsurface/surface/air) have thei respective marker icon. The icon size needs some tweaking and can be modified in '‎src/context/FleetMapManager.py' in method 'def _createVehicleSymbol'
+As of 2026/06/09, different vehicle types (subsurface/surface/air) have thei respective marker icon. The icon size needs some tweaking and can be modified in `src/context/FleetMapManager.py` in method `def _createVehicleSymbol`
