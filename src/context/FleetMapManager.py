@@ -121,9 +121,13 @@ class FleetMapManager(QObject):
             # do not explode if the layer doesnt exist...
             if self._waypointLayer is None:
                 print("Error: Waypoint layer not initialized")
+                return
+            
             renderer = self._waypointLayer.renderer()
             if renderer is None:
                 print("Error: Waypoint layer has no renderer")
+                return 
+            
             self._waypointLayer.renderer().addCategory(category)
 
             vehicle = VehicleMapObject(
@@ -152,6 +156,9 @@ class FleetMapManager(QObject):
 
         assert(state.latitude)
         assert(state.longitude)
+        if self._waypointLayer is None:
+            print("Error: Waypoint layer not initialized at vehicle update!")
+            return
 
         vehicle.lastLatitude = state.latitude
         vehicle.lastLongitude = state.longitude
@@ -175,6 +182,10 @@ class FleetMapManager(QObject):
 
     @pyqtSlot(str, bool)
     def onShowOnMapChanged(self, vehicleTopic: str, state: bool):
+        if self._waypointLayer is None:
+            print("Error: Waypoint layer not initialized on map changed!")
+            return
+        
         catIdx = self._waypointLayer.renderer().categoryIndexForLabel(vehicleTopic)
         if catIdx < 0:
             # TODO: should this be logged?
@@ -184,6 +195,10 @@ class FleetMapManager(QObject):
 
     @pyqtSlot(str, QColor)
     def onMapColorChanged(self, vehicleTopic: str, color: QColor):
+        if self._waypointLayer is None:
+            print("Error: Waypoint layer not initialized on map color changed!")
+            return
+        
         catIdx = self._waypointLayer.renderer().categoryIndexForLabel(vehicleTopic)
         if catIdx < 0:
             # TODO: should this be logged?
@@ -212,6 +227,10 @@ class FleetMapManager(QObject):
         iface.mapCanvas().zoomScale(25000) # zoom to fixed scale (e.g. 1:500)
 
     def clearAllVehicleMarkers(self):
+        if self._waypointLayer is None:
+            print("Error: Waypoint layer not initialized on clear all!")
+            return
+        
         # Clear all features from the vector layer
         self._waypointLayer.dataProvider().truncate()
         self._waypointLayer.triggerRepaint()
