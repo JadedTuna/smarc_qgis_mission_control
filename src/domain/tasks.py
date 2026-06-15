@@ -726,7 +726,7 @@ class DeployPayloadTask(Task):
         return cls(
             description = str(data["description"]),
             uuid = UUID(data["task-uuid"]),
-            payload = str(data["params"]["payload"]),
+            payload = str(data["params"]["unit"]),
         )
 
     def toJson(self) -> dict:
