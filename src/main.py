@@ -174,10 +174,15 @@ class SMaRCMissionControlPlugin(QObject):
         dialog.setPort(self.user_settings.get("mqtt", {}).get("port", 1883))
         dialog.setUsername(self.user_settings.get("mqtt", {}).get("username", ""))
         dialog.setPassword(self.user_settings.get("mqtt", {}).get("password", ""))
-        dialog.setContext(self.user_settings.get("mqtt", {}).get("context", "#"))
+        dialog.setContext(self.user_settings.get("mqtt", {}).get("context", "+"))
 
         if dialog.exec() != QDialog.Accepted:
             return
+        
+        context = dialog.context()
+        if context == "#":
+            context = "+"
+            print("Warning: MQTT context set to '#', this only works if its at the end of a topic, context is not. Replacing with '+' instead.")
         
         try:
             self.fleetContext.mqtt.connect(
@@ -185,7 +190,7 @@ class SMaRCMissionControlPlugin(QObject):
                 dialog.port(),
                 dialog.username(),
                 dialog.password(),
-                dialog.context(),
+                context,
             )
         except Exception as e:
             self.set_mqtt_button_style(False)
