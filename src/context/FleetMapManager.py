@@ -63,7 +63,13 @@ class FleetMapManager(QObject):
         # Customized renderer which will colorize points for each vehicle
         self._waypointLayer.setRenderer(QgsCategorizedSymbolRenderer("vehicle-name"))
 
-        qgs.addMapLayer(self._waypointLayer)
+        # Register layer with project
+        qgs.addMapLayer(self._waypointLayer, False)
+
+        # Insert the layer at top of layer tree
+        QgsProject.instance().layerTreeRoot().insertLayer(0, self._waypointLayer)
+
+        #TODO auto-select/highlight newly created layer
 
     def _createVehicleSymbol(self, vehicleTopic: str, color: QColor) -> QgsMarkerSymbol:
         # Pick icon by vehicle type encoded in the topic
@@ -241,3 +247,5 @@ class FleetMapManager(QObject):
             vehicle.lastLatitude = None
             vehicle.lastLongitude = None
             vehicle.lastFid = None
+
+    # TODO: cleanup method for vehicleLayers
