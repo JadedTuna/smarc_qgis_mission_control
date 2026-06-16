@@ -61,6 +61,7 @@ class TaskType(StrEnum):
     ALARS_SEARCH = "alars-search"
     ALARS_RECOVER = "alars-recover"
     ALARS_FOLLOW_AUV = "alars-follow-auv"
+    ALARS_PING_SEARCH = "alars-ping-search"
 
     # succorfish ping tasks
     SMARC_MODEM_PING = "smarc-modem-ping"
@@ -690,6 +691,9 @@ class AlarsFollowAUVTask(Task):
            = 0.0
     vulture_speed_deg: Annotated[float, Unit("°/s"), Column("VultureSpeedDeg")] \
            = 10.0
+    timeout: Annotated[float, Unit("s"), Column("timeout")] \
+        = 30
+
 
     @classmethod
     def fromJson(cls, data: dict) -> 'AlarsFollowAUVTask':
@@ -700,6 +704,7 @@ class AlarsFollowAUVTask(Task):
             follow_altitude = float(data["params"]["follow_altitude"]),
             vulture_radius = float(data["params"]["vulture_radius"]),
             vulture_speed_deg = float(data["params"]["vulture_speed_deg"]),
+            timeout = float(data["params"]["timeout"]),
         )
 
     def toJson(self) -> dict:
@@ -708,8 +713,54 @@ class AlarsFollowAUVTask(Task):
                 "follow_altitude": self.follow_altitude,
                 "vulture_radius": self.vulture_radius,
                 "vulture_speed_deg": self.vulture_speed_deg,
+                "timeout": self.timeout,
             }
         }
+    
+
+
+@TaskRegistry.register
+@dataclass
+class AlarsPingSearch(MultiWaypointTask):
+    type = TaskType.ALARS_PING_SEARCH
+    waypointClass = GeoPoint
+
+    # Task parameters
+    modem_to_ping: Annotated[int, Column("ModemToPing")] \
+           = 111
+    modem_depth: Annotated[float, Unit("m"), Column("ModemDepth")] \
+           = 0.0
+    dipping_altitude: Annotated[float, Unit("m"), Column("DippingAltitude")] \
+           = 0.0
+    max_pings: Annotated[int, Column("MaxPings")] \
+           = 5
+
+    @classmethod
+    def fromJson(cls, data: dict) -> 'AlarsPingSearch':
+        assert(data["name"] == str(cls.type))
+        wps = list(map(GeoPoint.fromJson, data["params"]["waypoints"]))
+        return cls(
+            description = str(data["description"]),
+            uuid = UUID(data["task-uuid"]),
+            waypoints = wps,
+            modem_to_ping = int(data["params"]["modem_to_ping"]),
+            modem_depth = float(data["params"]["modem_depth"]),
+            dipping_altitude = float(data["params"]["dipping_altitude"]),
+            max_pings = int(data["params"]["max_pings"]),
+        )
+
+    def toJson(self) -> dict:
+        return super().toJson() | {
+            "params": {
+                "modem_to_ping": self.modem_to_ping,
+                "modem_depth": self.modem_depth,
+                "dipping_altitude": self.dipping_altitude,
+                "max_pings": self.max_pings,
+                "waypoints": [w.toJson() for w in self.waypoints]
+            }
+        }
+    
+
     
 @TaskRegistry.register
 @dataclass
