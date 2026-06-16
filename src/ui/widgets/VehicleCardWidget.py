@@ -45,7 +45,7 @@ class VehicleCardWidget(QWidget):
 
         # Collapse/expand the body contents
         self.ui.collapseExpandButton.clicked.connect(self.toggleCollapsed)
-        self.setCollapsed(False)
+        self.setCollapsed(True)
 
         # Change header colors when the checkbox is toggled
         self.ui.cardCheckBox.toggled.connect(self.setChecked)
