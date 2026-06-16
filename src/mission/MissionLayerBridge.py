@@ -39,6 +39,7 @@ class MissionLayerBridge(QObject):
         QGIS_EDIT_COMMAND = 'qgis-edit-command'
         CUSTOM_EDIT_COMMAND = 'custom-edit-command'
         REPLAYING_QGIS_COMMAND = 'replaying-qgis-command'
+    SMARC_WP_GROUP_NAME = 'SMaRCMissionWaypoints'
 
     waypointMoved = pyqtSignal(UUID, QgsPointXY)
     waypointAdded = pyqtSignal(UUID, UUID, QgsPointXY)
@@ -75,13 +76,13 @@ class MissionLayerBridge(QObject):
         # Setup waypoint layer
         qgs = QgsProject.instance()
         # Remove any stale layers
-        matching = qgs.mapLayersByName(f'SMaRCMissionWaypoints-{planUuid}')
+        matching = qgs.mapLayersByName(f'{self.SMARC_WP_GROUP_NAME}-{planUuid}')
         qgs.removeMapLayers([l.id() for l in matching])
 
         # Setup our layer
         self.waypointLayer = QgsVectorLayer(
             'point?crs=epsg:4326', # IMPORTANT: layer crs set to espg:4326
-            f'SMaRCMissionWaypoints-{planUuid}',
+            f'{self.SMARC_WP_GROUP_NAME}-{planUuid}',
             'memory'
         )
         self.waypointLayer.dataProvider().addAttributes([
@@ -91,7 +92,16 @@ class MissionLayerBridge(QObject):
         ])
         self.waypointLayer.updateFields()
 
-        qgs.addMapLayer(self.waypointLayer)
+        qgs.addMapLayer(self.waypointLayer, False)
+
+        # Find or create the f"{self.SMARC_WP_GROUP_NAME}" group at  top of the layer tree
+        root = QgsProject.instance().layerTreeRoot()
+        wp_group = root.findGroup(f"{self.SMARC_WP_GROUP_NAME}")
+        if wp_group is None:
+            wp_group = root.insertGroup(0, f"{self.SMARC_WP_GROUP_NAME}")
+        wp_group.addLayer(self.waypointLayer)
+
+        #TODO auto-select/highlight newly created layer
 
         self.waypointLayer.featureAdded.connect(self.onFeatureAdded)
         self.waypointLayer.featureDeleted.connect(self.onFeatureDeleted)
@@ -274,3 +284,5 @@ class MissionLayerBridge(QObject):
         # TODO: confirm editable?
         point = QgsPointXY(longitude, latitude)
         self.waypointLayer.changeGeometry(fid, QgsGeometry.fromPointXY(point))
+
+    # TODO: cleanup method for MissionPlanLayers
